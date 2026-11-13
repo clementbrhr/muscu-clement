@@ -3,12 +3,16 @@
    À chaque nouvelle version de l'appli, on change VERSION :
    l'ancien cache est supprimé et le nouveau est rempli. */
 
-const VERSION = "0.1.0";
+const VERSION = "0.2.0";
 const CACHE = "ma-seance-" + VERSION;
 
 const FICHIERS = [
   "./",
   "./index.html",
+  "./style.css",
+  "./programme.js",
+  "./moteur.js",
+  "./app.js",
   "./manifest.json",
   "./sw.js",
   "./icons/icon-180.png",

@@ -10,15 +10,19 @@ Appli web perso, pensée pour iPhone, qui génère ma séance de musculation du 
 
 | Fichier | Rôle |
 |---|---|
-| `index.html` | L'appli (écrans, styles, logique). |
+| `programme.js` | **Les données** : séances, charges, règles, textes. C'est ici qu'on fait évoluer le programme. |
+| `moteur.js` | La logique : construction d'une séance, durée estimée, vérification des règles. Pas d'écran. |
+| `app.js` | Les écrans (Aujourd'hui, Séance, Réglages) et ce qui est enregistré dans le téléphone. |
+| `index.html`, `style.css` | La page et son style. |
 | `manifest.json` | Nom, icônes et couleurs pour l'installation sur l'écran d'accueil. |
 | `sw.js` | Service worker : copie de l'appli dans le téléphone pour le hors ligne. Changer `VERSION` à chaque livraison. |
 | `icons/` | Icônes de l'appli. |
+| `tests/verifications.js` | Vérifications automatiques de la section 13 du brief : `node tests/verifications.js`. |
 
 ## Avancement
 
 - [x] Étape 0 : coquille installable, hors ligne, tests de copie et des liens Claude.
-- [ ] Étape 1 : écran "Aujourd'hui" et séance complète.
+- [x] Étape 1 : écran "Aujourd'hui" et séance complète (affichage seul, durée estimée).
 - [ ] Étape 2 : écran "Séance" (séries, charges, démarrer / terminer, alternance).
 - [ ] Étape 3 : adaptation au temps.
 - [ ] Étape 4 : groupes rajoutés.

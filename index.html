@@ -12,177 +12,84 @@
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icons/icon-180.png">
   <link rel="icon" href="icons/icon-192.png">
-  <style>
-    :root {
-      --fond: #18181b;
-      --carte: #27272a;
-      --texte: #fafafa;
-      --texte-2: #a1a1aa;
-      --accent: #ff9f0a;
-      --accent-texte: #18181b;
-      --ok: #30d158;
-      --ko: #ff453a;
-      --bord: #3f3f46;
-    }
-    * { box-sizing: border-box; }
-    html, body {
-      margin: 0;
-      background: var(--fond);
-      color: var(--texte);
-      font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif;
-      font-size: 18px;
-      line-height: 1.4;
-      -webkit-text-size-adjust: 100%;
-    }
-    body {
-      padding: calc(env(safe-area-inset-top) + 16px) 16px calc(env(safe-area-inset-bottom) + 24px);
-      max-width: 520px;
-      margin: 0 auto;
-    }
-    h1 { font-size: 30px; margin: 8px 0 4px; }
-    h2 { font-size: 20px; margin: 28px 0 10px; color: var(--texte-2); font-weight: 600; }
-    p { margin: 8px 0; }
-    .muted { color: var(--texte-2); font-size: 16px; }
-    .carte {
-      background: var(--carte);
-      border: 1px solid var(--bord);
-      border-radius: 16px;
-      padding: 16px;
-      margin: 12px 0;
-    }
-    .etat {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 17px;
-      margin: 6px 0;
-    }
-    .point {
-      width: 12px; height: 12px; border-radius: 50%;
-      background: var(--texte-2);
-      flex: none;
-    }
-    .point.ok { background: var(--ok); }
-    .point.ko { background: var(--ko); }
-    .bouton {
-      display: block;
-      width: 100%;
-      min-height: 60px;
-      margin: 12px 0;
-      padding: 14px 18px;
-      border: none;
-      border-radius: 14px;
-      background: var(--accent);
-      color: var(--accent-texte);
-      font: inherit;
-      font-size: 19px;
-      font-weight: 700;
-      text-align: center;
-      text-decoration: none;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .bouton.secondaire {
-      background: var(--carte);
-      color: var(--texte);
-      border: 1px solid var(--bord);
-    }
-    .bouton:active { opacity: 0.8; }
-    .message {
-      min-height: 24px;
-      font-size: 16px;
-      color: var(--texte-2);
-      margin-top: 6px;
-    }
-    .version { margin-top: 32px; text-align: center; font-size: 14px; color: var(--texte-2); }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Ma séance</h1>
-  <p class="muted">Étape 0 : coquille de l'appli. La génération de séance arrive à l'étape 1.</p>
 
-  <div class="carte">
-    <div class="etat"><span id="pt-install" class="point"></span><span id="txt-install">Installation : vérification</span></div>
-    <div class="etat"><span id="pt-cache" class="point"></span><span id="txt-cache">Hors ligne : vérification</span></div>
-    <div class="etat"><span id="pt-reseau" class="point"></span><span id="txt-reseau">Réseau : vérification</span></div>
-  </div>
+  <!-- ÉCRAN AUJOURD'HUI -->
+  <section class="ecran" id="ecran-aujourdhui">
+    <h1>Aujourd'hui</h1>
+    <p class="muted" id="date-jour"></p>
 
-  <h2>Test 1 : la copie</h2>
-  <p class="muted">Appuie, puis colle dans Notes pour vérifier que le texte est bien copié.</p>
-  <button class="bouton" id="btn-copie">Copier un texte de test</button>
-  <div class="message" id="msg-copie"></div>
+    <h2>Séance</h2>
+    <div class="segments" id="choix-type">
+      <button class="choix" data-type="push">Push</button>
+      <button class="choix" data-type="pull">Pull</button>
+    </div>
+    <p class="muted petit" id="aide-type"></p>
 
-  <h2>Test 2 : ouvrir Claude</h2>
-  <p class="muted">Essaie les deux liens. Dis-moi lequel ouvre l'appli Claude, et si le texte "Test depuis Ma séance" apparaît déjà dans la zone de message.</p>
-  <a class="bouton secondaire" id="lien-a" href="claude://claude.ai/new?q=Test%20depuis%20Ma%20s%C3%A9ance">Lien A (claude://)</a>
-  <a class="bouton secondaire" id="lien-b" href="https://claude.ai/new?q=Test%20depuis%20Ma%20s%C3%A9ance" target="_blank" rel="noopener">Lien B (https://claude.ai)</a>
+    <h2>Temps disponible</h2>
+    <div class="puces" id="choix-temps">
+      <button class="choix" data-temps="45">45 min</button>
+      <button class="choix" data-temps="60">60 min</button>
+      <button class="choix" data-temps="75">75 min</button>
+      <button class="choix" data-temps="90">90 min</button>
+      <button class="choix" data-temps="autre" style="flex-basis:100%">Autre durée</button>
+    </div>
+    <input class="saisie cache" id="temps-libre" type="number" inputmode="numeric" min="10" max="180" placeholder="Minutes">
 
-  <p class="version">Version <span id="version">0.1.0</span></p>
+    <h2>À rajouter</h2>
+    <div class="puces" id="choix-groupes">
+      <button class="choix" data-groupe="triceps">Triceps</button>
+      <button class="choix" data-groupe="epaules">Épaules</button>
+      <button class="choix" data-groupe="abdos">Abdos et obliques</button>
+      <button class="choix" data-groupe="biceps">Biceps</button>
+    </div>
 
-  <script>
-    function etat(id, ok, texte) {
-      var pt = document.getElementById("pt-" + id);
-      pt.className = "point " + (ok === null ? "" : ok ? "ok" : "ko");
-      document.getElementById("txt-" + id).textContent = texte;
-    }
+    <button class="bouton" id="btn-generer">Générer ma séance</button>
+    <button class="bouton secondaire cache" id="btn-reprendre">Reprendre la séance en cours</button>
+  </section>
 
-    // Installation : l'appli tourne-t-elle depuis l'écran d'accueil ?
-    var installee = window.navigator.standalone === true ||
-      window.matchMedia("(display-mode: standalone)").matches;
-    etat("install", installee,
-      installee ? "Installée sur l'écran d'accueil" : "Ouverte dans Safari, pas encore installée");
+  <!-- ÉCRAN SÉANCE -->
+  <section class="ecran" id="ecran-seance">
+    <div id="contenu-seance"></div>
+  </section>
 
-    // Réseau
-    function majReseau() {
-      etat("reseau", navigator.onLine, navigator.onLine ? "Réseau : connecté" : "Réseau : hors ligne");
-    }
-    majReseau();
-    window.addEventListener("online", majReseau);
-    window.addEventListener("offline", majReseau);
+  <!-- ÉCRAN RÉGLAGES -->
+  <section class="ecran" id="ecran-reglages">
+    <h1>Réglages</h1>
+    <p class="muted">Les charges, les paramètres de temps et l'export arrivent à l'étape 6.</p>
 
-    // Hors ligne : le service worker est-il actif ?
-    if ("serviceWorker" in navigator) {
-      var dejaRecharge = false;
-      navigator.serviceWorker.register("sw.js").then(function (reg) {
-        if (navigator.serviceWorker.controller) {
-          etat("cache", true, "Hors ligne : prêt, l'appli est enregistrée dans le téléphone");
-        } else {
-          etat("cache", null, "Hors ligne : enregistrement en cours, recharge la page une fois");
-        }
-        reg.addEventListener("updatefound", function () {
-          var nouveau = reg.installing;
-          nouveau.addEventListener("statechange", function () {
-            if (nouveau.state === "activated" && navigator.serviceWorker.controller) {
-              etat("cache", true, "Hors ligne : prêt (mise à jour installée)");
-            }
-          });
-        });
-      }).catch(function () {
-        etat("cache", false, "Hors ligne : impossible d'enregistrer l'appli");
-      });
-      navigator.serviceWorker.addEventListener("controllerchange", function () {
-        if (dejaRecharge) return;
-        dejaRecharge = true;
-        etat("cache", true, "Hors ligne : prêt");
-      });
-    } else {
-      etat("cache", false, "Hors ligne : non pris en charge par ce navigateur");
-    }
+    <h2>État de l'appli</h2>
+    <div class="carte">
+      <div class="etat"><span id="pt-install" class="point"></span><span id="txt-install">Installation : vérification</span></div>
+      <div class="etat"><span id="pt-cache" class="point"></span><span id="txt-cache">Hors ligne : vérification</span></div>
+      <div class="etat"><span id="pt-reseau" class="point"></span><span id="txt-reseau">Réseau : vérification</span></div>
+    </div>
 
-    // Test de copie
-    document.getElementById("btn-copie").addEventListener("click", function () {
-      var texte = "Test de copie depuis Ma séance, " + new Date().toLocaleString("fr-FR");
-      var msg = document.getElementById("msg-copie");
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(texte).then(function () {
-          msg.textContent = "Copié. Colle dans Notes pour vérifier.";
-        }).catch(function () {
-          msg.textContent = "La copie a échoué. Dis-le moi.";
-        });
-      } else {
-        msg.textContent = "Copie non prise en charge par ce navigateur. Dis-le moi.";
-      }
-    });
-  </script>
+    <h2>Test 1 : la copie</h2>
+    <button class="bouton secondaire" id="btn-copie">Copier un texte de test</button>
+    <div class="message" id="msg-copie"></div>
+
+    <h2>Test 2 : ouvrir Claude</h2>
+    <p class="muted petit">Dis-moi lequel ouvre l'appli Claude, et si "Test depuis Ma séance" apparaît dans la zone de message.</p>
+    <a class="bouton secondaire" href="claude://claude.ai/new?q=Test%20depuis%20Ma%20s%C3%A9ance">Lien A (claude://)</a>
+    <a class="bouton secondaire" href="https://claude.ai/new?q=Test%20depuis%20Ma%20s%C3%A9ance" target="_blank" rel="noopener">Lien B (https://claude.ai)</a>
+
+    <h2>Données</h2>
+    <button class="bouton secondaire" id="btn-effacer">Effacer la séance du jour</button>
+
+    <p class="version">Version <span id="version"></span></p>
+  </section>
+
+  <nav class="nav">
+    <button data-ecran="aujourdhui">Aujourd'hui</button>
+    <button data-ecran="seance">Séance</button>
+    <button data-ecran="reglages">Réglages</button>
+  </nav>
+
+  <script src="programme.js"></script>
+  <script src="moteur.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
