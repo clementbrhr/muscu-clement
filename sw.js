@@ -23,7 +23,11 @@ const FICHIERS = [
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE).then((cache) => cache.addAll(FICHIERS)).then(() => self.skipWaiting())
+    caches.open(CACHE)
+      /* "reload" : on prend les fichiers sur le réseau, pas dans le cache du navigateur,
+         pour être sûr d'avoir la dernière version. */
+      .then((cache) => cache.addAll(FICHIERS.map((f) => new Request(f, { cache: "reload" }))))
+      .then(() => self.skipWaiting())
   );
 });
 

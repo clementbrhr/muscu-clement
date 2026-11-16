@@ -233,7 +233,9 @@
 
   var installee = window.navigator.standalone === true ||
     window.matchMedia("(display-mode: standalone)").matches;
-  voyant("install", installee, installee ? "Installée sur l'écran d'accueil" : "Ouverte dans Safari, pas installée");
+  voyant("install", installee ? true : null, installee
+    ? "Installée sur l'écran d'accueil"
+    : "Pas encore installée : bouton Partager, puis Sur l'écran d'accueil");
 
   function majReseau() {
     voyant("reseau", navigator.onLine, navigator.onLine ? "Réseau : connecté" : "Réseau : hors ligne");
@@ -243,6 +245,17 @@
   window.addEventListener("offline", majReseau);
 
   if ("serviceWorker" in navigator) {
+    /* Quand une nouvelle version de l'appli est installée, on recharge
+       la page une fois pour l'afficher tout de suite. */
+    var avaitUneVersion = !!navigator.serviceWorker.controller;
+    var dejaRecharge = false;
+    navigator.serviceWorker.addEventListener("controllerchange", function () {
+      if (!avaitUneVersion) { voyant("cache", true, "Hors ligne : prêt"); return; }
+      if (dejaRecharge) return;
+      dejaRecharge = true;
+      window.location.reload();
+    });
+
     navigator.serviceWorker.register("sw.js").then(function (reg) {
       if (navigator.serviceWorker.controller) {
         voyant("cache", true, "Hors ligne : prêt");
